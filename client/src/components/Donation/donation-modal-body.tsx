@@ -16,6 +16,7 @@ type DonationModalBodyProps = {
   activeDonors?: number;
   closeDonationModal: typeof closeDonationModal;
   recentlyClaimedBlock: RecentlyClaimedBlock;
+  setCanClose: (canClose: boolean) => void;
 };
 
 const Illustration = () => {
@@ -25,7 +26,6 @@ const Illustration = () => {
       alt={t('donate.flying-bear')}
       id={'supporter-bear'}
       src={supporterBear}
-      data-playwright-test-label='not-found-image'
     />
   );
 };
@@ -158,7 +158,7 @@ const AnimationContainer = ({
           alt=''
           src={donationAnimation}
           id={'donation-animation'}
-          data-playwright-test-label='not-found-image'
+          data-playwright-test-label='donation-animation'
         />
       </div>
     </>
@@ -218,7 +218,8 @@ const BecomeASupporterConfirmation = ({
 
 function DonationModalBody({
   closeDonationModal,
-  recentlyClaimedBlock
+  recentlyClaimedBlock,
+  setCanClose
 }: DonationModalBodyProps): JSX.Element {
   const [donationAttempted, setDonationAttempted] = useState(false);
   const [showHeaderAndFooter, setShowHeaderAndFooter] = useState(true);
@@ -246,6 +247,12 @@ function DonationModalBody({
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (secondsRemaining === 0) {
+      setCanClose(true);
+    }
+  }, [secondsRemaining, setCanClose]);
+
   return (
     <Modal.Body borderless alignment='start'>
       <div aria-live='polite' className='donation-modal'>
@@ -269,5 +276,6 @@ function DonationModalBody({
 }
 
 DonationModalBody.displayName = 'DonationModalBody';
+Benefits.displayName = 'DonationModalBenefits';
 
 export default DonationModalBody;
